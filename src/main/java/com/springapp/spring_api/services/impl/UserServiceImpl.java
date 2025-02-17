@@ -1,28 +1,30 @@
 package com.springapp.spring_api.services.impl;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.springapp.spring_api.entities.User;
 import com.springapp.spring_api.repositories.UserRepository;
-import com.springapp.spring_api.services.InterfaceUserService;
+import com.springapp.spring_api.services.UserService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-public class UserService implements InterfaceUserService{
+@Slf4j
+public class UserServiceImpl implements UserService{
   
   @Autowired()
   private final UserRepository userRepository;
   private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-  public UserService(UserRepository userRepository){
+  public UserServiceImpl(UserRepository userRepository){
     this.userRepository =  userRepository;
   }
   
   public List<User> getAllUsers(){
+    log.debug("Debug from user service");
     return userRepository.findAll();
   }
 
@@ -35,8 +37,8 @@ public class UserService implements InterfaceUserService{
     return userRepository.existsByEmail(email);
   }
 
-  public Optional<User> findByID(Long id){
-    return userRepository.findById(id);
+  public User findByID(Long id){
+    return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
   }
 
 }
